@@ -1,4 +1,4 @@
-# project5_curriculum (Team Have it Your Way)
+# Curriculum Logs Project (Team Have it Your Way)
 
 Group project between with team members Keila Camarillo and Brian ONeil
 
@@ -24,24 +24,21 @@ Group project between with team members Keila Camarillo and Brian ONeil
 
 ## Initial Thoughts
 
-* 
+* We believe there is enough data to explore in the dataset to answer all of the questions.
 
 ## The Plan
 
 * Acquire 
 
-* Prepare the data using the following columns:
-    * target: 
+* Prepare the data using the following columns: 
     * features:
-        * 
-        * 
-        * 
-        * 
-        * 
-        * 
-        * 
+        * date
+        * endpoint
+        * user_id
+        * cohort_id
+        * source_ip
 
-* Explore dataset for predictors of property value ('__')
+* Explore dataset to answer questions:
     * Answer the following questions:
     * 1. Which lesson appears to attract the most traffic consistently across cohorts (per program)?
     * 2. Is there a cohort that referred to a lesson significantly more than other cohorts seemed to gloss over?
@@ -49,15 +46,15 @@ Group project between with team members Keila Camarillo and Brian ONeil
     * 6. What topics are grads continuing to reference after graduation and into their jobs (for each program)?
     * 7. Which lessons are least accessed?
 
-* Develop a model
-    * Using the selected data features develop appropriate predictive models
-    * Evaluate the models in action using train and validate splits as well as scaled data
-    * Choose the most accurate model 
-    * Evaluate the most accurate model using the final test data set
-    * Draw conclusions
-
 ## Data Dictionary
 
+| Feature   | Definition                                                                                                                     |
+|-----------|--------------------------------------------------------------------------------------------------------------------------------|
+| date      | the date and time a user accessed Codeup curriculum internet page                                                              |
+| endpoint  | the page the user landed on in the curriculum                                                                                  |
+| user_id   | the number assigned to a user by CodeUp (i.e. student, staff)                                                                  |
+| cohort_id | the number assigned to a cohort in a program by CodeUp                                                                         |
+| source_ip | Internet Protocol address, is a numerical label assigned to each device connected to a computer network that uses the Internet |
 
 ## Steps to Reproduce
 1) Clone the the following repo: git@github.com:Team-Have-it-Your-Way/project5_curriculum.git in terminal
