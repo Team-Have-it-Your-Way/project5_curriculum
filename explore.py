@@ -69,3 +69,315 @@ def plot_endpoints_ds(df3):
     # show the plot
     plt.show()
     
+# ------------------- Question 3
+
+def specify_staff(df, staff_list):
+    df['staff'] = df['user_id'].apply(lambda x: 1 if x in staff_list else 0)
+    return df
+
+# accesses within cohort
+def specify_timeframe(df, date, start_date, end_date):
+    df['outside_cohort'] = df.apply(lambda row: 1 if row[date] < row[start_date] or row[date] > row[end_date] else 0, axis=1)
+    return df
+
+def categorize_field(data, field_name):
+    if field_name not in data.columns:
+        raise KeyError(f"Column '{field_name}' not found in DataFrame.")
+    
+    categories = {
+        1: 'Web Development 1.0',
+        2: 'Web Development 2.0',
+        3: 'Data Science'
+    }
+    
+    def categorize(value):
+        return categories.get(value, 'Unknown')
+    
+    data['program_name'] = data[field_name].apply(categorize)
+    return data
+
+
+def q3(df):
+    # staff_list
+    staff_list = [ 53, 314,  40,  64,  11, 211,   1, 312, 146, 248, 370, 397, 404,
+       257, 428, 461,  37, 514, 539, 545, 546, 572, 315,  41, 592, 618,
+       620, 521, 652, 502, 653, 480, 738, 742, 745, 813, 430, 816, 581,
+       854, 855, 744, 893, 148, 894, 513, 630, 308, 951, 953, 980]
+    
+    df = specify_staff(df, staff_list)
+
+    # whether they accesed during their cohort
+    df = specify_timeframe(df, "dates", "start_date", "end_date")
+
+    # list of student ids  
+    students = df[df.staff == 0]
+    student_ids = list(students.user_id.unique())
+
+    # students who accessed curriculum outside cohort: 86900 times and 541 students
+    student_accessed_outside_cohort = students[students.outside_cohort == 1]
+
+    # students who accessed curriculum during cohort: 692348 times and 790 students
+    student_accessed_during_cohort = students[students.outside_cohort == 0]
+
+    access_curr = list(student_accessed_during_cohort.user_id.unique())
+
+    # list of student user ids that did not access curriculum during cohort
+    not_access_curr = [num for num in student_ids if num not in access_curr]
+
+    # students that did not access curriculum within cohort 
+    stu_not_access_curr_df = students[students['user_id'].isin(not_access_curr)]
+
+
+    stu_not_access_curr_df = categorize_field(stu_not_access_curr_df, "program_id")
+    stu_nac_df = stu_not_access_curr_df[["program_name", "program_id", "user_id"]].drop_duplicates()
+
+    return stu_nac_df
+
+
+def trim_legend(df, column_name, categories):
+    """
+    Trims and categorizes a column in a pandas DataFrame based on provided categories.
+
+    Args:
+        df (pandas.DataFrame): The DataFrame containing the column to be trimmed and categorized.
+        column_name (str): The name of the column to be trimmed and categorized.
+        categories (list): A list of categories to be used for categorization. Any values not
+            matching the provided categories will be categorized as 'Other'.
+
+    Returns:
+        pandas.DataFrame: The modified DataFrame with the trimmed and categorized column.
+
+    """
+    categorized_column = df[column_name].apply(lambda x: x.strip() if isinstance(x, str) else x)
+    categorized_column = categorized_column.apply(lambda x: x if x in categories else 'Other')
+    df[column_name] = categorized_column
+    return df
+
+
+def plot_stacked_bar(df,yaxis,legend,title,xlabel,ylabel,limit=0,legendnames=None,figsize=None, palette="Pastel1"):
+    """
+    Generates a stacked horizontal bar plot based on the given DataFrame and parameters.
+
+    Args:
+        df (pandas.DataFrame): The DataFrame containing the data to be plotted.
+        legend (str): The column name in the DataFrame representing the legend/category.
+        limit (int): The maximum number of categories to include in the plot. If there are more categories than the limit,
+            the excess categories will be grouped under the "Other" category.
+        yaxis (str): The column name in the DataFrame representing the y-axis values.
+        palette (str or list): The color palette to use for the plot. It can be a named seaborn palette or a list of colors.
+        figsize (tuple): The figure size (width, height) of the plot.
+        legendnames (list or None): Optional. The list of legend/category names to use for labeling the plot legend.
+            If None, the unique values from the 'legend' column will be used.
+        title (str or None): Optional. The title of the plot. If None, no title will be displayed.
+        ylabel (str or None): Optional. The label for the y-axis. If None, no label will be displayed.
+        xlabel (str or None): Optional. The label for the x-axis. If None, no label will be displayed.
+
+    Returns:
+        None: The plot is displayed using matplotlib.pyplot.show().
+    """
+    lvalues = df.loc[:,legend]
+    if limit > 0 and limit < len(lvalues.unique()):
+        lvcounts = lvalues.value_counts().reset_index()
+        lcats =  list(lvcounts.loc[:,'index'][:limit])
+        df = trim_legend(df,legend,lcats)
+        lcats.append("Other")
+    else:
+        lcats = list(lvalues.value_counts().reset_index().loc[:,'index'].unique())
+
+    ycats = df.loc[:,yaxis].sort_values(ascending=False).unique()
+    myOrd = df.loc[:,legend].replace({k: v for v, k in enumerate(lcats)})
+    myOrd.value_counts()
+    data= {}
+    for ndx in range(0,len(ycats)):
+        data[ycats[ndx]]= myOrd[df.loc[:,yaxis] == ycats[ndx]].dropna().value_counts()
+
+    sns.set_palette(palette)
+    plotdata = pd.DataFrame(data).T
+#     plotdata = Tpose.div(Tpose.sum(axis=1), axis=0) * 100
+
+    plotdata.plot(kind='barh',figsize=figsize, stacked=True)
+    plt.legend((lcats,legendnames)[legendnames!=None], bbox_to_anchor=(1.05, 1)).remove()
+    plt.title(title)
+    plt.ylabel(ylabel)
+    plt.xlabel(xlabel)
+    plt.show()
+
+
+# ------------------- Question 6 & 7
+def saoc_df(df):
+    '''
+    Filter the DataFrame to return students who accessed outside their cohort.
+
+    Parameters:
+        df (pandas.DataFrame): The input DataFrame containing student data.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing students who accessed outside their cohort.
+    '''
+    # list of student ids  
+    students = df[df.staff == 0]
+    student_ids = list(students.user_id.unique())
+
+    student_accessed_outside_cohort = students[students.outside_cohort == 1]
+    
+    # Remove 'content/' from values in 'endpoint'
+    student_accessed_outside_cohort['endpoint'] = student_accessed_outside_cohort['endpoint'].str.replace('content/', '')
+    
+    # Remove '/' and everything afterwards 
+    student_accessed_outside_cohort['endpoint'] = student_accessed_outside_cohort['endpoint'].str.split('/').str[0]
+    
+    # replace nulls with 'home'
+    student_accessed_outside_cohort['endpoint'] = student_accessed_outside_cohort['endpoint'].fillna('home')
+    
+    # program_id 1
+    wd1_oc = student_accessed_outside_cohort[student_accessed_outside_cohort.program_id == 1]
+    
+    # program_id 2
+    wd2_oc =student_accessed_outside_cohort[student_accessed_outside_cohort.program_id == 2]
+
+    # program_id 3
+    ds_oc = student_accessed_outside_cohort[student_accessed_outside_cohort.program_id == 3]
+    
+    return wd1_oc, wd2_oc, ds_oc
+   
+
+def webdev1_ml(wd1_oc):
+    '''
+    Analyze web development lessons and return the most common and least common lessons.
+
+    Parameters:
+        wd1_oc (pandas.DataFrame): The input DataFrame containing web development lesson data.
+
+    Returns:
+        tuple: A tuple containing two DataFrames:
+            - The most common lessons DataFrame with columns 'Lesson' and 'Occurrences'.
+            - The least common lessons DataFrame with columns 'Lesson' and 'Occurrences'.
+    '''
+    # removing blanks and getting top 5 
+    wd1_oc = wd1_oc[wd1_oc.endpoint != '']
+
+    # most common lesson
+    wd1_mc_df = pd.DataFrame(wd1_oc.endpoint.value_counts().head()).reset_index()
+    # removed not lessons
+    wd1_oc = wd1_oc[~wd1_oc.endpoint.isin(['search', 'introduction-to-javascript.html'])]
+
+
+    # create df of least common lessons
+    
+    wd1_ls_df = pd.DataFrame(wd1_oc.endpoint.value_counts()).reset_index()[:27].sort_values(by = "endpoint", ascending=True).head()
+
+    return wd1_mc_df, wd1_ls_df
+    
+    
+
+def webdev_viz(mc, lc):
+    # Create two separate subplots
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))
+
+
+    # Plot for mc
+    ax1.plot(mc['index'], mc['endpoint'])
+    ax1.set_xlabel('Lessons')
+    ax1.set_ylabel('Occurences')
+    ax1.set_title('Most Common Lessons that Web Development Students Accessed Outside of their Cohort')
+
+
+    # Plot for lc
+    ax2.plot(lc['index'], lc['endpoint'])
+    ax2.set_xlabel('Lessons')
+    ax2.set_ylabel('Occurences')
+    ax2.set_title('Least Common Lessons that Web Development Students Accessed Outside of their Cohort')
+
+
+
+    # Adjust spacing between subplots
+    plt.tight_layout()
+
+    # Display the plots
+    plt.show()
+
+
+def webdev2_ml(wd2_oc):
+    '''
+    Analyze web development lessons and return the most common and least common lessons.
+
+    Parameters:
+        wd1_oc (pandas.DataFrame): The input DataFrame containing web development lesson data.
+
+    Returns:
+        tuple: A tuple containing two DataFrames:
+            - The most common lessons DataFrame with columns 'Lesson' and 'Occurrences'.
+            - The least common lessons DataFrame with columns 'Lesson' and 'Occurrences'.
+    '''
+    
+    # most common
+    # removing blanks and getting top 5 
+    wd2_oc = wd2_oc[wd2_oc.endpoint != '']
+    wd2_mc_df = pd.DataFrame(wd2_oc.endpoint.value_counts().head()).reset_index()
+    # least common df
+    wd2_oc = wd2_oc[~wd2_oc.endpoint.isin(['further-reading', 'login', 'setup', 'introduction', '2.00.02_Navigating_Excel'])]
+    wd2_lc_df = pd.DataFrame(wd2_oc.endpoint.value_counts()).reset_index()[:49].sort_values(by = "endpoint", ascending=True).head()
+    return wd2_mc_df, wd2_lc_df
+
+def webdev2_viz(mc, lc):
+    # Create two separate subplots
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))
+
+
+    # Plot for mc
+    ax1.plot(mc['index'], mc['endpoint'])
+    ax1.set_xlabel('Lessons')
+    ax1.set_ylabel('Occurences')
+    ax1.set_title('Most Common Lessons that Web Development 2.0 Students Accessed Outside of their Cohort')
+
+
+    # Plot for lc
+    ax2.plot(lc['index'], lc['endpoint'])
+    ax2.set_xlabel('Lessons')
+    ax2.set_ylabel('Occurences')
+    ax2.set_title('Least Common Lessons that Web Development 2.0 Students Accessed Outside of their Cohort')
+
+
+
+    # Adjust spacing between subplots
+    plt.tight_layout()
+
+    # Display the plots
+    plt.show()
+
+
+def ds_ml(ds_oc):
+    # removing blanks, search, and appendix and getting top 5 
+    ds_oc = ds_oc[~ds_oc.endpoint.isin(['', 'appendix', 'search'])]
+    # most lesson
+    ds_mc_df = pd.DataFrame(ds_oc.endpoint.value_counts().head()).reset_index()
+    # least lesson
+    ds_lc_df = pd.DataFrame(ds_oc.endpoint.value_counts()).reset_index()[:26].sort_values(by = "endpoint", ascending=True).head()
+
+    return ds_mc_df, ds_lc_df
+
+def ds_viz(ds_mc, ds_lc):
+    # Create two separate subplots
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))
+
+
+    # Plot for ds_mc
+    ax1.plot(ds_mc['index'], ds_mc['endpoint'])
+    ax1.set_xlabel('Lessons')
+    ax1.set_ylabel('Occurences')
+    ax1.set_title('Most Common Lessons that Data Science Students Accessed Outside of their Cohort')
+
+
+    # Plot for ds_lc
+    ax2.plot(ds_lc['index'], ds_lc['endpoint'])
+    ax2.set_xlabel('Lessons')
+    ax2.set_ylabel('Occurences')
+    ax2.set_title('Least Common Lessons that Data Science Students Accessed Outside of their Cohort')
+
+
+
+    # Adjust spacing between subplots
+    plt.tight_layout()
+
+    # Display the plots
+    plt.show()

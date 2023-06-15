@@ -59,6 +59,11 @@ def prepare_df():
 
     # rename columns
     df = df.rename(columns = {"cohort": "cohort_id", "name": "cohort_name"})
+    
+    # dropping program_id 4
+    df = df[df['program_id'] != 4]
+
 
     return df  
-   
+
+
