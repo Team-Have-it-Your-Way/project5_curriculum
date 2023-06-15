@@ -72,15 +72,49 @@ def plot_endpoints_ds(df3):
 # ------------------- Question 3
 
 def specify_staff(df, staff_list):
+    """
+    Specifies staff members in a DataFrame based on a given staff list.
+
+    Args:
+        df (pandas.DataFrame): The DataFrame to modify.
+        staff_list (list): A list of user IDs representing staff members.
+
+    Returns:
+        pandas.DataFrame: The modified DataFrame with a new 'staff' column indicating staff membership.
+    """
     df['staff'] = df['user_id'].apply(lambda x: 1 if x in staff_list else 0)
     return df
 
 # accesses within cohort
 def specify_timeframe(df, date, start_date, end_date):
+    """Specify the timeframe for a DataFrame based on given dates.
+
+    Args:
+        df (DataFrame): The input DataFrame.
+        date (str): The name of the column representing the dates to compare.
+        start_date (str): The name of the column representing the start date of the timeframe.
+        end_date (str): The name of the column representing the end date of the timeframe.
+
+    Returns:
+        DataFrame: The modified DataFrame with an additional column 'outside_cohort' indicating whether each row's date is outside the specified timeframe.
+    """
     df['outside_cohort'] = df.apply(lambda row: 1 if row[date] < row[start_date] or row[date] > row[end_date] else 0, axis=1)
     return df
 
 def categorize_field(data, field_name):
+    """
+    Categorizes values in a specified column of a DataFrame based on predefined categories.
+
+    Args:
+        data (pandas.DataFrame): The DataFrame containing the data.
+        field_name (str): The name of the column to categorize.
+
+    Returns:
+        pandas.DataFrame: The modified DataFrame with an additional 'program_name' column.
+
+    Raises:
+        KeyError: If the specified column is not found in the DataFrame.
+    """
     if field_name not in data.columns:
         raise KeyError(f"Column '{field_name}' not found in DataFrame.")
     
@@ -98,6 +132,18 @@ def categorize_field(data, field_name):
 
 
 def q3(df):
+    """
+    Filters the given DataFrame based on specific conditions and returns a DataFrame containing
+    information about students who did not access the curriculum during their cohort.
+
+    Args:
+        df (pandas.DataFrame): The input DataFrame containing student data.
+
+    Returns:
+        pandas.DataFrame: A DataFrame with columns 'program_name', 'program_id', and 'user_id' 
+        representing the program details and user IDs of students who did not access the curriculum 
+        during their cohort.
+    """
     # staff_list
     staff_list = [ 53, 314,  40,  64,  11, 211,   1, 312, 146, 248, 370, 397, 404,
        257, 428, 461,  37, 514, 539, 545, 546, 572, 315,  41, 592, 618,
@@ -271,6 +317,21 @@ def webdev1_ml(wd1_oc):
     
 
 def webdev_viz(mc, lc):
+    """
+    Creates two separate subplots to visualize the most common and least common lessons
+    that web development students accessed outside of their cohort.
+
+    Args:
+        mc (DataFrame): DataFrame containing data for the most common lessons. It should have
+                        columns 'index' and 'endpoint' representing the lessons and their occurrences.
+        lc (DataFrame): DataFrame containing data for the least common lessons. It should have
+                        columns 'index' and 'endpoint' representing the lessons and their occurrences.
+
+    Returns:
+        None: This function displays the plots directly.
+
+    """
+
     # Create two separate subplots
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))
 
@@ -320,6 +381,16 @@ def webdev2_ml(wd2_oc):
     return wd2_mc_df, wd2_lc_df
 
 def webdev2_viz(mc, lc):
+    """
+    Generate a visualization of the most common and least common lessons accessed by Web Development 2.0 students outside of their cohort.
+
+    Parameters:
+    - mc (DataFrame): A DataFrame containing the most common lessons accessed. It should have two columns: 'index' for lesson index and 'endpoint' for the number of occurrences.
+    - lc (DataFrame): A DataFrame containing the least common lessons accessed. It should have two columns: 'index' for lesson index and 'endpoint' for the number of occurrences.
+
+    Returns:
+    None
+    """
     # Create two separate subplots
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))
 
@@ -347,6 +418,16 @@ def webdev2_viz(mc, lc):
 
 
 def ds_ml(ds_oc):
+    """
+    Process a dataset of online courses.
+
+    Args:
+        ds_oc (pandas.DataFrame): The dataset of online courses.
+
+    Returns:
+        tuple: A tuple containing two pandas.DataFrame objects. The first dataframe (ds_mc_df) represents the most frequent lessons, 
+               and the second dataframe (ds_lc_df) represents the least frequent lessons.
+    """
     # removing blanks, search, and appendix and getting top 5 
     ds_oc = ds_oc[~ds_oc.endpoint.isin(['', 'appendix', 'search'])]
     # most lesson
@@ -357,6 +438,29 @@ def ds_ml(ds_oc):
     return ds_mc_df, ds_lc_df
 
 def ds_viz(ds_mc, ds_lc):
+    """Visualize most common and least common lessons accessed by Data Science students.
+
+    Args:
+        ds_mc (DataFrame): DataFrame containing data for most common lessons accessed.
+        ds_lc (DataFrame): DataFrame containing data for least common lessons accessed.
+
+    Returns:
+        None
+
+    Plots two subplots showing the most common and least common lessons accessed by Data Science students.
+    Each subplot displays the occurrences of lessons on the y-axis and the lesson index on the x-axis.
+    The first subplot represents the most common lessons accessed, and the second subplot represents the least common lessons accessed.
+    The subplots are displayed in a single figure with a size of 8x6.
+
+    The x-axis label for both subplots is set to 'Lessons'.
+    The y-axis label for both subplots is set to 'Occurrences'.
+    The title for the first subplot is set to 'Most Common Lessons that Data Science Students Accessed Outside of their Cohort',
+    and the title for the second subplot is set to 'Least Common Lessons that Data Science Students Accessed Outside of their Cohort'.
+
+    The function adjusts the spacing between the subplots using plt.tight_layout() to avoid overlapping.
+    Finally, the plots are displayed using plt.show().
+    """
+
     # Create two separate subplots
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))
 
