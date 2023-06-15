@@ -4,7 +4,7 @@ Group project between with team members Keila Camarillo and Brian ONeil
 
 ## Project Description
 
-* Using the dataset for curriculum website logs from CodeUp, Ms. Boss Person has multiple questions to be answered about the data prior to her meeting. Our team will acquire, prep, and explore the data using anomaly detection, time-series, and clustering to answer the questions. An email will be prepared and pushed to Ms. Boss Person explaining the answers to the questions along with an attached slide to summarize the findings.
+* Using the dataset for curriculum website logs from CodeUp, Ms. Boss Person has multiple questions to be answered about the data prior to her meeting. Our team will acquire, prep, and explore the data using analysis to answer the questions. An email will be prepared and pushed to Ms. Boss Person explaining the answers to the questions along with an attached slide and repository link to summarize the findings.
 
 ## Project Goals
 
@@ -37,6 +37,10 @@ Group project between with team members Keila Camarillo and Brian ONeil
         * user_id
         * cohort_id
         * source_ip
+        * start_date
+        * end_date
+        * program_id
+        * cohort_name
 
 * Explore dataset to answer questions:
     * Answer the following questions:
@@ -48,13 +52,16 @@ Group project between with team members Keila Camarillo and Brian ONeil
 
 ## Data Dictionary
 
-| Feature   | Definition                                                                                                                     |
-|-----------|--------------------------------------------------------------------------------------------------------------------------------|
-| date      | the date and time a user accessed Codeup curriculum internet page                                                              |
-| endpoint  | the page the user landed on in the curriculum                                                                                  |
-| user_id   | the number assigned to a user by CodeUp (i.e. student, staff)                                                                  |
-| cohort_id | the number assigned to a cohort in a program by CodeUp                                                                         |
-| source_ip | Internet Protocol address, is a numerical label assigned to each device connected to a computer network that uses the Internet |
+| Feature     | Definition                                                                                                                     |
+|-------------|--------------------------------------------------------------------------------------------------------------------------------|
+| date        | the date and time a user accessed Codeup curriculum internet page                                                              |
+| endpoint    | the page the user landed on in the curriculum                                                                                  |
+| user_id     | the number assigned to a user by CodeUp (i.e. student, staff)                                                                  |
+| cohort_id   | the number assigned to a cohort in a program by CodeUp                                                                         |
+| source_ip   | internet protocol address, is a numerical label assigned to each device connected to a computer network that uses the Internet |
+| start_date  | start_date of cohort                                                                                                           |
+| end_date    | end_date of cohort                                                                                                             |
+| cohort_name | the name of the cohort spelled                                                                                                 |
 
 ## Steps to Reproduce
 1) Clone the the following repo: git@github.com:Team-Have-it-Your-Way/project5_curriculum.git in terminal
@@ -62,13 +69,10 @@ Group project between with team members Keila Camarillo and Brian ONeil
 3) Run final notebook
 
 ## Takeaways and Conclusions
-Models used:
-* 
-
-* 
-* 
-* 
-* 
+* Q1: The most occurring and consistent lesson for WebDev 1.0 is 'javascript-i-introduction', with 232 hits. For WebDev 2.0, the most occuring and consistent lesson is also 'javascript-i-introduction', with over 7,000 hits across cohorts. For Data Science 3.0, the most consistent lesson is 'classification-overview', with over 1,400 hits across cohorts.
+* Q2: WebDev 1.0 cohort 1.0 and 10 other cohorts had 0-14 occurrences for 'javascript-i intro' lesson. WebDev 2.0 cohort 135.0 and 18 other cohorts had 0-300 occurrences. Data Science 3.0 cohort 59 had 1109 occurrences for 'classification-overview' lesson while 4 other cohorts had 0-445.
+* Q3: A total of 139 active students across 31 cohorts from years 2014 to 2020 did not access the curriculum. Specifically, 81 students were from web development 1.0, 54 from web development 2.0, and 4 from data science.
+* Q6 & Q7: 
 
 
 ## Recommendations
