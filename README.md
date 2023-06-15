@@ -72,11 +72,4 @@ Group project between with team members Keila Camarillo and Brian ONeil
 * Q1: The most occurring and consistent lesson for WebDev 1.0 is 'javascript-i-introduction', with 232 hits. For WebDev 2.0, the most occuring and consistent lesson is also 'javascript-i-introduction', with over 7,000 hits across cohorts. For Data Science 3.0, the most consistent lesson is 'classification-overview', with over 1,400 hits across cohorts.
 * Q2: WebDev 1.0 cohort 1.0 and 10 other cohorts had 0-14 occurrences for 'javascript-i intro' lesson. WebDev 2.0 cohort 135.0 and 18 other cohorts had 0-300 occurrences. Data Science 3.0 cohort 59 had 1109 occurrences for 'classification-overview' lesson while 4 other cohorts had 0-445.
 * Q3: A total of 139 active students across 31 cohorts from years 2014 to 2020 did not access the curriculum. Specifically, 81 students were from web development 1.0, 54 from web development 2.0, and 4 from data science.
-* Q6 & Q7: 
-
-
-## Recommendations
-* 
-* 
-* 
-* 
+* Q6 & Q7: In Web Development 1.0, HTML-css was the most common lesson while Fundamentals was the least common. For Web Development 2.0, Spring was the most common lesson while Databases was the least common. In Data Science, Classification was the most common lesson while Storytelling was the least common.
